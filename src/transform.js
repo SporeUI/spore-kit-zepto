@@ -15,7 +15,7 @@ $('div').transform();	//'translateX(20px)'
 $('div').transform('translateX');	//'20px'
 **/
 
-var $ = window.$;
+var $ = window.Zepto;
 
 $.fn.transform = function(property, value){
 	var obj = {};

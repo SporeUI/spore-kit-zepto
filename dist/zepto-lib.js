@@ -3045,7 +3045,7 @@ window.$ === undefined && (window.$ = Zepto)
 },{}],13:[function(require,module,exports){
 var $fastclick = require('fastclick');
 
-var $ = window.$;
+var $ = window.Zepto;
 
 if(!$.FastClick){
 	$.FastClick = $fastclick;
@@ -3054,7 +3054,7 @@ if(!$.FastClick){
 },{"fastclick":2}],14:[function(require,module,exports){
 var $getScript = require('spore-kit-io/src/getScript');
 
-var $ = window.$;
+var $ = window.Zepto;
 
 function getScript(url, fn){
 
@@ -3073,7 +3073,7 @@ $.getScript = getScript;
 
 
 },{"spore-kit-io/src/getScript":3}],15:[function(require,module,exports){
-var $ = window.$;
+var $ = window.Zepto;
 
 /**
 驼峰转连字符
@@ -3092,6 +3092,8 @@ $.hyphenate = function(str){
 },{}],16:[function(require,module,exports){
 
 var PrefixFree;
+
+var $ = window.Zepto;
 
 var camelCase = $.camelCase;
 
@@ -3266,11 +3268,11 @@ var hyphenate = $.hyphenate;
 		return PrefixFree.prefix;
 	};
 
-})(window.$);
+})(window.Zepto);
 
 
 },{}],17:[function(require,module,exports){
-var $ = window.$;
+var $ = window.Zepto;
 
 $.fn.reflow = function(){
 	var reflow = this.size() && this.get(0).clientLeft;
@@ -3295,7 +3297,7 @@ $('div').transform();	//'translateX(20px)'
 $('div').transform('translateX');	//'20px'
 **/
 
-var $ = window.$;
+var $ = window.Zepto;
 
 $.fn.transform = function(property, value){
 	var obj = {};

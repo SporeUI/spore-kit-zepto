@@ -1,6 +1,6 @@
 var $fastclick = require('fastclick');
 
-var $ = window.$;
+var $ = window.Zepto;
 
 if(!$.FastClick){
 	$.FastClick = $fastclick;

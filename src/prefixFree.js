@@ -1,6 +1,8 @@
 
 var PrefixFree;
 
+var $ = window.Zepto;
+
 var camelCase = $.camelCase;
 
 var hyphenate = $.hyphenate;
@@ -174,5 +176,5 @@ var hyphenate = $.hyphenate;
 		return PrefixFree.prefix;
 	};
 
-})(window.$);
+})(window.Zepto);
 

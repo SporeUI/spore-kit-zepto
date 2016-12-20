@@ -1,6 +1,6 @@
 var $getScript = require('spore-kit-io/src/getScript');
 
-var $ = window.$;
+var $ = window.Zepto;
 
 function getScript(url, fn){
 

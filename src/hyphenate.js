@@ -1,4 +1,4 @@
-var $ = window.$;
+var $ = window.Zepto;
 
 /**
 驼峰转连字符
