@@ -16,6 +16,8 @@ spore-ui 所需的库文件，用于支持移动端开发
 
 #### 弃用下列 zepto 模块
 
+- ie
+- ios3
 - data: use var instead
 - assets: just remove nodes
 - stack: end is evil
