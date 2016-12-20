@@ -78,5 +78,9 @@ describe('zepto deprecated', function() {
 
 describe('extra', function() {
 
+	it('getScript', function() {
+		chai.expect($.getScript).to.be.an('function');
+	});
+
 });
 

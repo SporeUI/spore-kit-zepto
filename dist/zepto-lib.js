@@ -10,17 +10,52 @@ require('zepto/src/touch');
 require('zepto/src/detect');
 require('zepto/src/gesture');
 
-// require('zepto/src/stack');
-// require('zepto/src/callbacks');
-// require('zepto/src/deferred');
-// require('zepto/src/fx_methods');
-
-// require('./src/getScript');
+require('./src/getScript');
 
 
 
 
-},{"zepto/src/ajax":2,"zepto/src/detect":3,"zepto/src/event":4,"zepto/src/form":5,"zepto/src/fx":6,"zepto/src/gesture":7,"zepto/src/selector":8,"zepto/src/touch":9,"zepto/src/zepto":10}],2:[function(require,module,exports){
+},{"./src/getScript":12,"zepto/src/ajax":3,"zepto/src/detect":4,"zepto/src/event":5,"zepto/src/form":6,"zepto/src/fx":7,"zepto/src/gesture":8,"zepto/src/selector":9,"zepto/src/touch":10,"zepto/src/zepto":11}],2:[function(require,module,exports){
+/**
+加载script
+@param {object} options script选项
+@param {string} options.src script地址
+@param {string} [options.charset='utf-8'] script编码
+@param {function} [options.onLoad] script加载完成的回调函数
+**/
+
+function getScript(options) {
+    options = options || {};
+
+    var src = options.src || '';
+    var charset = options.charset || '';
+    var onLoad = options.onLoad || function(){};
+
+    var script = document.createElement('script');
+    script.async = 'async';
+    script.src = src;
+
+    if(charset){
+        script.charset = charset;
+    }
+
+    script.onload = script.onreadystatechange = function() {
+        if (!this.readyState || 'loaded' === this.readyState || 'complete' === this.readyState) {
+            if(typeof onLoad === 'function'){
+                onLoad();
+            }
+            this.onload = this.onreadystatechange = null;
+            this.parentNode.removeChild(this);
+        }
+    };
+    document.getElementsByTagName('head')[0].appendChild(script);
+    return script;
+}
+
+module.exports = getScript;
+
+
+},{}],3:[function(require,module,exports){
 //     Zepto.js
 //     (c) 2010-2016 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
@@ -405,7 +440,7 @@ require('zepto/src/gesture');
   }
 })(Zepto)
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 //     Zepto.js
 //     (c) 2010-2016 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
@@ -481,7 +516,7 @@ require('zepto/src/gesture');
 
 })(Zepto)
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 //     Zepto.js
 //     (c) 2010-2016 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
@@ -758,7 +793,7 @@ require('zepto/src/gesture');
 
 })(Zepto)
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 //     Zepto.js
 //     (c) 2010-2016 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
@@ -800,7 +835,7 @@ require('zepto/src/gesture');
 
 })(Zepto)
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 //     Zepto.js
 //     (c) 2010-2016 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
@@ -925,7 +960,7 @@ require('zepto/src/gesture');
   testEl = null
 })(Zepto)
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 //     Zepto.js
 //     (c) 2010-2016 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
@@ -962,7 +997,7 @@ require('zepto/src/gesture');
   }
 })(Zepto)
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 //     Zepto.js
 //     (c) 2010-2016 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
@@ -1049,7 +1084,7 @@ require('zepto/src/gesture');
   }
 })(Zepto)
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 //     Zepto.js
 //     (c) 2010-2016 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
@@ -1219,7 +1254,7 @@ require('zepto/src/gesture');
   })
 })(Zepto)
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 //     Zepto.js
 //     (c) 2010-2016 Thomas Fuchs
 //     Zepto.js may be freely distributed under the MIT license.
@@ -2161,4 +2196,25 @@ var Zepto = (function() {
 window.Zepto = Zepto
 window.$ === undefined && (window.$ = Zepto)
 
-},{}]},{},[1])
+},{}],12:[function(require,module,exports){
+var $getScript = require('spore-kit-io/src/getScript');
+
+var $ = window.$;
+
+function getScript(url, fn){
+
+	if(typeof url === 'string'){
+		$getScript({
+			src : url,
+			onLoad : fn
+		});
+	}else if(typeof url === 'object'){
+		$getScript(url);
+	}
+
+}
+
+$.getScript = getScript;
+
+
+},{"spore-kit-io/src/getScript":2}]},{},[1])

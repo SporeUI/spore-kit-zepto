@@ -9,7 +9,7 @@ require('zepto/src/touch');
 require('zepto/src/detect');
 require('zepto/src/gesture');
 
-// require('./src/getScript');
+require('./src/getScript');
 
 
 
