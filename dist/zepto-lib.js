@@ -11,11 +11,12 @@ require('zepto/src/detect');
 require('zepto/src/gesture');
 
 require('./src/getScript');
+require('./src/reflow');
+require('./src/transform');
+require('./src/hyphenate');
+require('./src/prefixFree');
 
-
-
-
-},{"./src/getScript":12,"zepto/src/ajax":3,"zepto/src/detect":4,"zepto/src/event":5,"zepto/src/form":6,"zepto/src/fx":7,"zepto/src/gesture":8,"zepto/src/selector":9,"zepto/src/touch":10,"zepto/src/zepto":11}],2:[function(require,module,exports){
+},{"./src/getScript":12,"./src/hyphenate":13,"./src/prefixFree":14,"./src/reflow":15,"./src/transform":16,"zepto/src/ajax":3,"zepto/src/detect":4,"zepto/src/event":5,"zepto/src/form":6,"zepto/src/fx":7,"zepto/src/gesture":8,"zepto/src/selector":9,"zepto/src/touch":10,"zepto/src/zepto":11}],2:[function(require,module,exports){
 /**
 加载script
 @param {object} options script选项
@@ -2217,4 +2218,274 @@ function getScript(url, fn){
 $.getScript = getScript;
 
 
-},{"spore-kit-io/src/getScript":2}]},{},[1])
+},{"spore-kit-io/src/getScript":2}],13:[function(require,module,exports){
+var $ = window.$;
+
+/**
+驼峰转连字符
+@example
+console.info(
+	$.hyphenate('strDivText')
+);
+//str-div-text
+**/
+$.hyphenate = function(str){
+	return str.replace(/[A-Z]/g, function($0){
+		return '-' + $0.toLowerCase();
+	});
+};
+
+},{}],14:[function(require,module,exports){
+
+var PrefixFree;
+
+var camelCase = $.camelCase;
+
+var hyphenate = $.hyphenate;
+
+(function(root, undefined){
+
+	if(!window.getComputedStyle) {
+		return;
+	}
+
+	var getComputedStyle = window.getComputedStyle;
+
+	var self = {
+		prefixProperty: function(property, bCamelCase) {
+			var prefixed = self.prefix + property;
+			return bCamelCase ? camelCase(prefixed) : prefixed;
+		}
+	};
+
+	PrefixFree = self;
+
+	(function() {
+		var i, property,
+			prefixes = {},
+			highest = { prefix: '', uses: 0},
+			properties = [],
+			shorthands = {},
+			style = getComputedStyle(document.documentElement, null),
+			dummy = document.createElement('div').style;
+
+		// Why are we doing this instead of iterating over properties in a .style object? Cause Webkit won't iterate over those.
+		var iterate = function(property) {
+			pushUnique(properties, property);
+
+			if(property.indexOf('-') > -1) {
+				var parts = property.split('-');
+
+				if(property.charAt(0) === '-') {
+					var prefix = parts[1],
+						uses = ++prefixes[prefix] || 1;
+
+					prefixes[prefix] = uses;
+
+					if(highest.uses < uses) {
+						highest = {prefix: prefix, uses: uses};
+					}
+
+					// This helps determining shorthands
+					while(parts.length > 3) {
+						parts.pop();
+
+						var shorthand = parts.join('-'),
+							shorthandDOM = camelCase(shorthand);
+
+						if(shorthandDOM in dummy) {
+							pushUnique(properties, shorthand);
+						}
+					}
+				}
+			}
+		};
+
+		// Some browsers have numerical indices for the properties, some don't
+		if(style.length > 0) {
+			for(i = 0; i < style.length; i++) {
+				iterate(style[i]);
+			}
+		}
+		else {
+			for(property in style) {
+				iterate(hyphenate(property));
+			}
+		}
+
+		self.prefix = '-' + highest.prefix + '-';
+		self.Prefix = camelCase(self.prefix);
+
+		properties.sort();
+
+		self.properties = [];
+
+		// Get properties ONLY supported with a prefix
+		for(i=0; i<properties.length; i++){
+			property = properties[i];
+
+			if(property.charAt(0) !== '-') {
+				break; // it's sorted, so once we get to the first unprefixed property, we're done
+			}
+
+			if(property.indexOf(self.prefix) === 0) { // we might have multiple prefixes, like Opera
+				var unprefixed = property.slice(self.prefix.length);
+
+				if(!(camelCase(unprefixed) in dummy)) {
+					self.properties.push(unprefixed);
+				}
+			}
+		}
+
+		// IE fix
+		if(self.Prefix == 'Ms' &&
+			!('transform' in dummy) &&
+			!('MsTransform' in dummy) &&
+			('msTransform' in dummy)
+		){
+			self.properties.push('transform', 'transform-origin');
+		}
+
+		self.properties.sort();
+	})();
+
+	// Add class for current prefix
+	root.className += ' ' + self.prefix;
+
+	function pushUnique(arr, val) {
+		if(arr.indexOf(val) === -1) {
+			arr.push(val);
+		}
+	}
+
+})(document.documentElement);
+
+(function($){
+
+	if(!PrefixFree){return;}
+
+	$.cssProps = $.cssProps || {};
+
+	var i, property, camelCased, prefix;
+	for(i = 0; i < PrefixFree.properties.length; i++) {
+		property = PrefixFree.properties[i];
+		camelCased = camelCase(property);
+		prefix = PrefixFree.prefixProperty(property);
+		$.cssProps[camelCased] = prefix;
+	}
+
+	var _css = $.fn.css;
+
+	var formatValue = function(value){
+		if(!value){return value;}
+		value = value.replace(/transform/gi, $.cssProps.transform);
+		return value;
+	};
+
+	$.fn.css = function(property, value){
+		var key, prefixKey, camelCased;
+		if(typeof property === 'string'){
+			camelCased = camelCase(property);
+			if($.cssProps[camelCased]){
+				property = $.cssProps[camelCased];
+				value = formatValue(value);
+			}
+		}else{
+			Object.keys(property).forEach(function(key){
+				camelCased = camelCase(key);
+				if($.cssProps[camelCased]){
+					prefixKey = $.cssProps[camelCased];
+					property[prefixKey] = formatValue(property[key]);
+					delete property[key];
+				}
+			});
+		}
+
+		if(arguments.length < 2){
+			return _css.apply(this, [property]);
+		}else{
+			return _css.apply(this, [property, value]);
+		}
+	};
+
+	$.getPrefix = function(){
+		return PrefixFree.prefix;
+	};
+
+})(window.$);
+
+
+},{}],15:[function(require,module,exports){
+var $ = window.$;
+
+$.fn.reflow = function(){
+	var reflow = this.size() && this.get(0).clientLeft;
+	return this;
+};
+
+},{}],16:[function(require,module,exports){
+/**
+transform属性获取与设置
+
+@mixin lib/plugin/transform
+@param {String} property 要设置的 transform 属性
+@param {Object} property transform 键值对
+@param {String} value 要设置的 transform 值
+@returns transform属性值， transform字符串，或者undefined
+@example
+$('div').transform('translateX', '20px');
+$('div').transform({
+	'translateX' : '20px'
+});
+$('div').transform();	//'translateX(20px)'
+$('div').transform('translateX');	//'20px'
+**/
+
+var $ = window.$;
+
+$.fn.transform = function(property, value){
+	var obj = {};
+	var transform = $(this).css('transform') || '';
+	transform = transform === 'none' ? '' : transform;
+
+	transform = transform.replace(/,\s+/gi, ',');
+
+	$.each(transform.split(/\s+/gi), function(index, str){
+		if(!str){return;}
+		var name = str.match(/\w+/)[0];
+		var val = str.replace(name, '').replace(/[\(\)]/gi,'');
+		val = $.trim(val);
+		obj[name] = val;
+	});
+
+	if(!property){
+		return obj;
+	}
+
+	if(typeof property === 'string'){
+		if($.type(value) === 'undefined'){
+			return obj[property] || 0;
+		}else{
+			obj[property] = value;
+		}
+	}else{
+		$.extend(obj, property);
+	}
+
+	transform = [];
+	$.each(obj, function(key, val){
+		var str = key + '(' + val + ')';
+		transform.push(str);
+	});
+
+	if(transform.length){
+		transform = transform.join(' ');
+	}else{
+		transform = '';
+	}
+
+	return $(this).css('transform', transform);
+};
+
+
+},{}]},{},[1])

@@ -10,6 +10,7 @@ require('zepto/src/detect');
 require('zepto/src/gesture');
 
 require('./src/getScript');
-
-
-
+require('./src/reflow');
+require('./src/transform');
+require('./src/hyphenate');
+require('./src/prefixFree');
