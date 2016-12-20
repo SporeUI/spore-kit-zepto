@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/SporeUI/spore-kit-zepto#readme",
   "dependencies": {
+    "fastclick": "^1.0.6",
     "spore-kit-io": "^0.1.0",
     "zepto": "^1.2.0"
   },

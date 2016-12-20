@@ -14,3 +14,5 @@ require('./src/reflow');
 require('./src/transform');
 require('./src/hyphenate');
 require('./src/prefixFree');
+require('./src/fastclick');
+

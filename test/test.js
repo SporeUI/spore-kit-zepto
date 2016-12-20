@@ -125,10 +125,14 @@ describe('extra', function() {
 		}
 	});
 
-	it('prefixFree', function() {
+	it('prefix free', function() {
 		var el = $('.demo-prefixfree');
 		el.css('locale', 'initial');
 		chai.expect(el.get(0).style.cssText).to.contain('-webkit-locale');
+	});
+
+	it('$.FastClick', function() {
+		chai.expect($.FastClick).to.be.an('function');
 	});
 
 });
