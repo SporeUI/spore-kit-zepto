@@ -1,0 +1,29 @@
+{
+  "name": "spore-kit-zepto",
+  "version": "0.1.0",
+  "description": "spore-ui 所需的库文件，用于支持移动端开发",
+  "main": "zepto-lib.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SporeUI/spore-kit-zepto.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SporeUI/spore-kit-zepto/issues"
+  },
+  "homepage": "https://github.com/SporeUI/spore-kit-zepto#readme",
+  "dependencies": {
+    "spore-kit-io": "^0.1.0",
+    "zepto": "^1.2.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
+    "mocha": "^3.2.0"
+  }
+}

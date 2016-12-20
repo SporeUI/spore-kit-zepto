@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mocha Test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+  </head>
+  <body>
+    <div id="test-area">
+      <div class="demo-selector" style="display: none;">
+        <span>1</span><span>2</span>
+      </div>
+    </div>
+    <div id="mocha"></div>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
+    <script>mocha.setup('bdd');</script>
+    <script src="../dist/zepto-lib.js"></script>
+    <script src="test.js"></script>
+    <script>
+      mocha.run();
+    </script>
+  </body>
+</html>
