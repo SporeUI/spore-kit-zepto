@@ -32,7 +32,7 @@ spore-ui 所需的库文件，用于支持移动端开发
 - $.hyphenate 字符串连字符化
 - $.getPrefix 获得css前缀
 - prefix free 设置样式时自动追加前缀
-- $.FastClick 移动端移除点击 300ms 延迟
+- $.FastClick 移动端点击移除 300ms 延迟
 
 ## Release History
 
