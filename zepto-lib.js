@@ -1,5 +1,4 @@
-var $zepto = require('zepto/src/zepto');
-
+require('zepto/src/zepto');
 require('zepto/src/selector');
 require('zepto/src/ajax');
 require('zepto/src/event');

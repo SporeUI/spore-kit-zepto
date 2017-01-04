@@ -126,6 +126,7 @@ var hyphenate = $.hyphenate;
 
 (function($){
 
+	if(!$){return;}
 	if(!PrefixFree){return;}
 
 	$.cssProps = $.cssProps || {};
